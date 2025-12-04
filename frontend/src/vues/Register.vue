@@ -5,10 +5,17 @@ import { addEmployee } from '../utils/services.js';
 let registerResponse = ref("");
 
 const registerEmployee = async (event) => {
+  let firstName = document.getElementById('firstNameInput').value;
+  let lastName = document.getElementById('lastNameInput').value;
+  let username = firstName.charAt(0).toLowerCase() + lastName.toLowerCase();
+  let password = "eggplant123!";
+
   event.preventDefault();
     let newEmployee = {
-      firstName: document.getElementById('firstNameInput').value,
-      lastName: document.getElementById('lastNameInput').value,
+      firstName,
+      lastName,
+      username,
+      password,
       location: document.getElementById('locationInput').value,
       department: document.getElementById('departmentInput').value,
       title: document.getElementById('titleInput').value,
