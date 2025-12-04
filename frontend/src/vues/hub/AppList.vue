@@ -1,17 +1,26 @@
 <script setup>
+import { useRouter } from 'vue-router';
+const router = useRouter();
 
+// This is the default path for Vue apps running locally which will work fine for the demo 
+// for multiapp release you will want to update the paths, could be to a .env file
+let defaultPath = 'http://localhost:5173/'
 
 let apps = [
-  { name: 'BeeThere', image: 'htmlicon.svg', color: 'var(--greenlite)', path: '/bee-there' },
-  { name: 'SailBoat', image: 'htmlicon.svg', color: 'var(--purplelite)', path: '/sail-boat' },
-  { name: 'EggPlant', image: 'htmlicon.svg', color: 'var(--purple)', path: '/egg-plant' },
+  { name: 'BeeThere', image: 'BeeThere.png', color: 'var(--greenlite)', path: defaultPath }, 
+  { name: 'SailBoat', image: 'htmlicon.svg', color: 'var(--purplelite)', path: defaultPath },
+  { name: 'EggPlant', image: 'htmlicon.svg', color: 'var(--purple)', path: '/eggplant' },
   { name: '', image: '', color: 'var(--buzzlite)', path: '' },
   { name: '', image: '', color: 'var(--buzzlite)', path: '' },
   { name: '', image: '', color: 'var(--buzzlite)', path: '' },
 ];
 
 const navigateToApp = (path) => {
-  router.push(path);
+ if (path.startsWith('http')) {
+    window.location.href = path;
+  } else {
+    router.push(path);
+  }
 };
 
 </script>
@@ -25,7 +34,7 @@ const navigateToApp = (path) => {
       class="appCard" 
       @click="navigateToApp(app.path)" :style="{ backgroundColor: app.color }"
     >
-     <img v-if="app.image && app.name" :src="`/src/assets/${app.image}`" :alt="app.name" width="50" height="50" />
+     <img v-if="app.image && app.name" :src="`/src/assets/${app.image}`" :alt="app.name" width="100" height="100" />
       <p>{{ app.name }}</p>
     </div>
   </div>
