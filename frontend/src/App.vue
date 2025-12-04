@@ -1,24 +1,26 @@
 <script setup>
-import Register from './vues/Register.vue';
-import Token from './vues/Token.vue';
+import RegisterVue from './vues/Register.vue';
+import TokenVue from './vues/Token.vue';
 </script>
 
 <template>
   <div className="body">
   <div className="header">
-  <h1>Eggpl🍆nt</h1>
+  <img src='./assets/eggplant.png' alt="Eggplant" />
   <p>
     Employee Management Tool
   </p>
 </div>
 
 <div className="mainContent">
-<div className="leftBox">
-  <Register />
+  <!-- Left Box -->
+<div className="vueCard">
+  <RegisterVue />
 </div>
 
-<div className="rightBox">
-  <Token />
+<!-- Right Box -->
+<div className="vueCard">
+  <TokenVue />
 </div>
 
 
@@ -30,6 +32,7 @@ import Token from './vues/Token.vue';
 .body {
   height: 100%;
   display: flex;
+  gap: 3rem;
   flex-direction: column;
 }
 
@@ -43,16 +46,16 @@ import Token from './vues/Token.vue';
   background-image: url("@/assets/image.png");
   height:100%;
   display: flex;
+  gap: 1rem;
   flex-direction: row;
   justify-content: space-evenly;
 }
-.leftBox {
+.vueCard {
 padding: 1rem;
-width: 100%;
-}
-.rightBox {
-padding: 1rem;
-width: 100%;
+height: 25rem;
+width: 20rem;
+border-radius: 10%;
+background-color: var(--green);
 }
 </style>
 <style>
@@ -66,12 +69,11 @@ width: 100%;
 }
 html {
   height: 100%;
-  background-image: url("/assets/image.png");
 }
 body{
   margin:0;
   height:100%;
-  background-image: url("/assets/image.png");
+  background-image: url("@/assets/royalBackground.png");
 }
 #app{
   height:100%;

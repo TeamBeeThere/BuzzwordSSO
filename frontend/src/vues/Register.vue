@@ -1,7 +1,32 @@
-<script setup></script>
+<script setup>
+import { ref } from 'vue';
+import { addEmployee } from '../utils/services.js';
+
+let registerResponse = ref("");
+
+const registerEmployee = async (event) => {
+  event.preventDefault();
+    let newEmployee = {
+      firstName: document.getElementById('firstNameInput').value,
+      lastName: document.getElementById('lastNameInput').value,
+      location: document.getElementById('locationInput').value,
+      department: document.getElementById('departmentInput').value,
+      title: document.getElementById('titleInput').value,
+    };
+    let response = await addEmployee(newEmployee);
+    if (response.data) {
+      registerResponse.value = `${newEmployee.firstName} ${newEmployee.lastName} registered successfully!`;
+    }
+    else {
+      registerResponse.value = `Error registering Employee. Please try again. Or contact support.`;
+    }
+}
+
+</script>
 
 <template>
     <div className="register">
+      <h2>Register Employee</h2>
       <form>
        <div><label for="firstName">First Name</label>
        <input type="text" id="firstNameInput" name="firstName"/>
@@ -11,7 +36,7 @@
        </div>
        <div><label for="location">Location</label>
        <select id="locationInput" name="location">
-          <option disabled>Please Select The Location</option>
+          <option disabled selected>Select</option>
           <option value="Japan">Japan</option>
           <option value="Brazil">Brazil</option>
           <option value="United States">United States</option>
@@ -22,7 +47,7 @@
 
        <div><label for="Department">Department</label>
        <select id="departmentInput" name="department">
-          <option disabled>Please Select The Department</option>
+          <option disabled selected>Select</option>
           <option value="Sales">Sales</option>
           <option value="Information Technology">Information Technology</option>
           <option value="Legal">Legal</option>
@@ -32,14 +57,15 @@
 
       <div><label for="Title">Title</label>
        <select id="titleInput" name="title">
-          <option disabled >Please Select The Title</option>
+          <option disabled selected>Select</option>
           <option value="Aide">Aide</option>
           <option value="Developer">Developer</option>
           <option value="Sales Agent">Sales Agent</option>
           <option value="Manager">Manager</option>
         </select>
         </div>
-        <button text="Register Employee">Register </button>  
+        <p className="errorMessage">{{ registerResponse }}</p>
+        <button @click="registerEmployee" text="Register Employee">Register </button>  
        </form>
     
     </div>
@@ -47,19 +73,21 @@
 
 <style scoped>
 .register {
-    height: 60%;
-    width: 100%;
-  background-color: var(--green);
   text-align: center;
   display: flex;
+  flex-direction: column;
   align-items: center;
   }
+.errorMessage {
+  color: orange;
+}
 form {
   width: 100%;
   display: flex; 
   flex-direction: column;
   align-items: center;
-  gap: 1rem;}
+  gap: 1rem;
+ overflow-y: auto;}
 form div {
   width: 100%;
   display: flex;
@@ -78,5 +106,6 @@ form input, form select {
   border-radius: 5px;
   border: none;
   margin-right: 1rem;
+  background-color: var(--purplelite);
 }
 </style>
