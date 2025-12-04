@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import { addEmployee } from '../utils/services.js';
+import { addEmployee } from '../../utils/services.js';
 
 let registerResponse = ref("");
 
