@@ -13,6 +13,8 @@ let apps = [
   { name: '', image: '', color: 'var(--buzzlite)', path: '' },
   { name: '', image: '', color: 'var(--buzzlite)', path: '' },
   { name: '', image: '', color: 'var(--buzzlite)', path: '' },
+  { name: '', image: '', color: 'var(--buzzlite)', path: '' },
+  { name: '', image: '', color: 'var(--buzzlite)', path: '' },
 ];
 
 const navigateToApp = (path) => {
