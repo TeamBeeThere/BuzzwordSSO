@@ -87,7 +87,7 @@ public class UsersService {
 
     // TODO: Update User Details
     @Transactional
-    public Employee updateUserDetails(UserDTO updatedUser, EmployeeDTO updatedEmployee) {
+    public Users updateUserDetails(UserDTO updatedUser) {
         
         // 1. Fetch the existing User record
         Users existingUser = userRepository.findById(updatedUser.getUserId())
@@ -95,38 +95,24 @@ public class UsersService {
             
         // Update User fields
         existingUser.setUserName(updatedUser.getUserName());
-        userRepository.save(existingUser);
-
-        // 2. Fetch the existing Employee record (assuming employee ID matches user ID for simplicity)
-        Employee existingEmployee = employeeRepository.findById(updatedUser.getUserId())
-            .orElseThrow(() -> new NoSuchElementException("Employee profile not found for user ID: " + updatedUser.getUserId()));
-
-        // Update Employee fields
-        existingEmployee.setFirstName(updatedEmployee.getFirstName());
-        existingEmployee.setLastName(updatedEmployee.getLastName());
-        existingEmployee.setTitle(updatedEmployee.getTitle());
-        existingEmployee.setDepartment(updatedEmployee.getDepartment());
-        existingEmployee.setEmail(updatedEmployee.getEmail());
-        existingEmployee.setLocation(updatedEmployee.getLocationId());
-        
-        return employeeRepository.save(existingEmployee);
+        return userRepository.save(existingUser);
     }
 
     // TODO: Delete Employee
     @Transactional
-    public void deleteEmployee(UserDTO user) {
+    public void deleteEmployee(int id) {
         
         // 1. Check if user exists
-        Optional<Users> userToDelete = userRepository.findById(user.getUserId());
+        Optional<Users> userToDelete = userRepository.findById(id);
         if (userToDelete.isEmpty()) {
-            throw new NoSuchElementException("User not found with ID: " + user.getUserId());
+            throw new NoSuchElementException("User not found with ID: " + id);
         }
         
         // 2. Delete the Employee record (assuming employee ID matches user ID)
-        employeeRepository.findById(user.getUserId()).ifPresent(employeeRepository::delete);
+        employeeRepository.findByUserId(id).ifPresent(employeeRepository::delete);
 
         // 3. Delete the Login record (assuming login ID matches user ID)
-        loginRepository.findById(user.getUserId()).ifPresent(loginRepository::delete);
+        loginRepository.findByUserId(id).ifPresent(loginRepository::delete);
 
         // 4. Delete the User record (Primary record)
         userRepository.delete(userToDelete.get());

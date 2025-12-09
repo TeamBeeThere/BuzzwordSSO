@@ -10,10 +10,18 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.emerald.dto.EmployeeDTO;
+import com.emerald.dto.LoginDTO;
+import com.emerald.dto.UserDTO;
+import com.emerald.service.EmployeeService;
+import com.emerald.service.UsersService;
 
 /**
  *
@@ -23,15 +31,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/sso")
 public class SSOController {
 
-    /* 
-        private final UserRepository userRepo;
-        private final EmployeeRepository empRepo
+        private final UsersService usersService;
+        private final EmployeeService employeeService;
 
-        SSOController(UserRepository userRepository, EmployeeRepository empRepository){
-            this.userRepo = userRepository;
-            this.empRepo = empRepository
+        SSOController(UsersService usersService, EmployeeService employeeService){
+            this.usersService = usersService;
+            this.employeeService = employeeService;
         }
-    */
     
     @GetMapping(("/hello"))
     public ResponseEntity<String> greetings(){
@@ -55,15 +61,9 @@ public class SSOController {
 
      /* Login Endpoint */
     @PostMapping("/login")
-    public ResponseEntity<String> login(/* @RequestBody User user */){
+    public ResponseEntity<String> login(@RequestBody UserDTO user, LoginDTO login){
 
-        /* if(userRepo.findByUsernameAndPassword(user.getUsername(), user.getPassword())){
-        
-        Employee currentEmployee = empRepo.getEmployeeByUserId(user.getId())
-        String token = Tokenizer(currentEmployee)
-
-        }
-        */
+        usersService.authenticateUser(user, login);
 
         return ResponseEntity.status(HttpStatus.OK)
                              .contentType(MediaType.APPLICATION_JSON)
@@ -71,37 +71,29 @@ public class SSOController {
     }
 
     @PostMapping("/createaccount")
-    public ResponseEntity<String> createAccount( /* @RequestBody User newUser */){
+    public ResponseEntity<String> createAccount(@RequestBody EmployeeDTO newUser){
 
-        //userRepo.save(newUser)
+        usersService.registerUser(newUser);
 
         return ResponseEntity.status(HttpStatus.OK)
                              .contentType(MediaType.APPLICATION_JSON)
                              .body("{\"message\": \"Account created.\"}");
     }
 
-    @DeleteMapping("/deleteaccount" /* "/deleteaccount/{id}" */)
-    public ResponseEntity<String> deleteAccount( /* @RequestBody User user, @PathVariable Long id */){
+    @DeleteMapping("/deleteaccount")
+    public ResponseEntity<String> deleteAccount(@PathVariable int id){
 
-        /*
-        userRepo.deleteById(id)
-        */
+        usersService.deleteEmployee(id);
 
         return ResponseEntity.status(HttpStatus.OK)
                              .contentType(MediaType.APPLICATION_JSON)
                              .body("{\"message\": \"Account deleted\"}");
     }
 
-    @PutMapping("/changepassword" /* "/changepassword/{id}" */)
-    public ResponseEntity<String> changePassword(/* @RequestBody User updatedUser */){
+    @PutMapping("/changepassword")
+    public ResponseEntity<String> changePassword(@RequestBody UserDTO updatedUser){
 
-        /*
-        userRepo.findById(id).map(user -> { 
-            user.setName(updatedUser.getName());
-            user.setPassword(updatedUser.getRole());
-            return userRepo.save(employee)
-         })
-        */
+        usersService.updateUserDetails(updatedUser);
 
         return ResponseEntity.status(HttpStatus.OK)
                              .contentType(MediaType.APPLICATION_JSON)

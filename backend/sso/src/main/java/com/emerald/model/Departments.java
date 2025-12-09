@@ -1,6 +1,6 @@
 package com.emerald.model;
 
-// import jakarta.annotation.Generated;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,6 +16,7 @@ import jakarta.persistence.Table;
 public class Departments {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name="ID")
     private int id;
 
     // private int ID;
