@@ -87,7 +87,7 @@ public class UsersService {
 
     // TODO: Update User Details
     @Transactional
-    public Employee updateUserDetails(UserDTO updatedUser, EmployeeDTO updatedEmployee) {
+    public Users updateUserDetails(UserDTO updatedUser) {
         
         // 1. Fetch the existing User record
         Users existingUser = userRepository.findById(updatedUser.getUserId())
@@ -95,21 +95,7 @@ public class UsersService {
             
         // Update User fields
         existingUser.setUserName(updatedUser.getUserName());
-        userRepository.save(existingUser);
-
-        // 2. Fetch the existing Employee record (assuming employee ID matches user ID for simplicity)
-        Employee existingEmployee = employeeRepository.findById(updatedUser.getUserId())
-            .orElseThrow(() -> new NoSuchElementException("Employee profile not found for user ID: " + updatedUser.getUserId()));
-
-        // Update Employee fields
-        existingEmployee.setFirstName(updatedEmployee.getFirstName());
-        existingEmployee.setLastName(updatedEmployee.getLastName());
-        existingEmployee.setTitle(updatedEmployee.getTitle());
-        existingEmployee.setDepartment(updatedEmployee.getDepartment());
-        existingEmployee.setEmail(updatedEmployee.getEmail());
-        existingEmployee.setLocation(updatedEmployee.getLocationId());
-        
-        return employeeRepository.save(existingEmployee);
+        return userRepository.save(existingUser);
     }
 
     // TODO: Delete Employee
