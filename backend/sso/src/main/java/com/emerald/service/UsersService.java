@@ -13,6 +13,10 @@ import com.emerald.model.Users;
 import com.emerald.model.Login;
 import com.emerald.model.Employee;
 
+import com.emerald.dto.UserDTO;
+import com.emerald.dto.EmployeeDTO;
+import com.emerald.dto.LoginDTO;
+
 @Service
 public class UsersService {
 
@@ -35,14 +39,15 @@ public class UsersService {
     // TODO: Register New Employee
 
     // TODO: Authenticate User
-    public Users authenticateUser(Integer userId, String rawPassword, String userName) throws SecurityException {
+    public Users authenticateUser(UserDTO passedUser, LoginDTO rawPassword) throws SecurityException {
         
+
         // 1. Find the User by ID
-        Users user = userRepository.findByUserName(userName)
+        Users user = userRepository.findByUserName(passedUser.getUserName())
             .orElseThrow(() -> new SecurityException("Authentication failed: Invalid credentials."));
         
         // 2. Retrieve the stored login hash
-        Login login = loginRepository.findById(userId)
+        Login login = loginRepository.findById(passedUser.getUserId())
             .orElseThrow(() -> new SecurityException("Authentication failed: Missing login record."));
             
         // 3. Verify the password
@@ -56,18 +61,18 @@ public class UsersService {
 
     // TODO: Update User Details
     @Transactional
-    public Employee updateUserDetails(Integer userId, Users updatedUser, Employee updatedEmployee) {
+    public Employee updateUserDetails(UserDTO updatedUser, EmployeeDTO updatedEmployee) {
         
         // 1. Fetch the existing User record
-        Users existingUser = userRepository.findById(userId)
-            .orElseThrow(() -> new NoSuchElementException("User not found with ID: " + userId));
+        Users existingUser = userRepository.findById(updatedUser.getUserId())
+            .orElseThrow(() -> new NoSuchElementException("User not found with ID: " + updatedUser.getUserId()));
             
         // Update User fields
         existingUser.setUserName(updatedUser.getUserName());
         userRepository.save(existingUser);
 
         // 2. Fetch the existing Employee record (assuming employee ID matches user ID for simplicity)
-        Employee existingEmployee = employeeRepository.findById(userId)
+        Employee existingEmployee = employeeRepository.findById(updatedUser.getUserId())
             .orElseThrow(() -> new NoSuchElementException("Employee profile not found for user ID: " + userId));
 
         // Update Employee fields
@@ -76,26 +81,26 @@ public class UsersService {
         existingEmployee.setTitle(updatedEmployee.getTitle());
         existingEmployee.setDepartment(updatedEmployee.getDepartment());
         existingEmployee.setEmail(updatedEmployee.getEmail());
-        existingEmployee.setLocation(updatedEmployee.getLocation());
+        existingEmployee.setLocation(updatedEmployee.getLocationId());
         
         return employeeRepository.save(existingEmployee);
     }
 
     // TODO: Delete Employee
     @Transactional
-    public void deleteEmployee(Integer userId) {
+    public void deleteEmployee(UserDTO user) {
         
         // 1. Check if user exists
-        Optional<Users> userToDelete = userRepository.findById(userId);
+        Optional<Users> userToDelete = userRepository.findById(user.getUserId());
         if (userToDelete.isEmpty()) {
-            throw new NoSuchElementException("User not found with ID: " + userId);
+            throw new NoSuchElementException("User not found with ID: " + user.getUserId());
         }
         
         // 2. Delete the Employee record (assuming employee ID matches user ID)
-        employeeRepository.findById(userId).ifPresent(employeeRepository::delete);
+        employeeRepository.findById(user.getUserId()).ifPresent(employeeRepository::delete);
 
         // 3. Delete the Login record (assuming login ID matches user ID)
-        loginRepository.findById(userId).ifPresent(loginRepository::delete);
+        loginRepository.findById(user.getUserId()).ifPresent(loginRepository::delete);
 
         // 4. Delete the User record (Primary record)
         userRepository.delete(userToDelete.get());
