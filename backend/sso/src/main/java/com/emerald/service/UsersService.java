@@ -15,6 +15,7 @@ import com.emerald.model.Users;
 import com.emerald.repository.EmployeeRepository;
 import com.emerald.repository.LoginRepository;
 import com.emerald.repository.UsersRepository;
+import com.emerald.util.UserUtils;
 
 @Service
 public class UsersService {
@@ -43,16 +44,19 @@ public class UsersService {
             request.getLastName().trim(),
             request.getTitle().trim(),
             request.getDepartment(),
-            request.getEmail().trim(),
+            UserUtils.generateEmail(request.getFirstName(), request.getLastName()),
             request.getLocationId()
         );
-        employeeRepository.save(employee);
 
-        // Create new user
-        String userName = String.format("%s.%s", employee.getFirstName(), employee.getLastName());
+        // Create and store new user
+        String userName = UserUtils.generateUserName(employee.getFirstName(), employee.getLastName());
         Users user = userRepository.saveAndFlush(new Users(userName));
 
-        // Create new password
+        // Store new employee
+        employee.setUserId(user.getId());
+        employeeRepository.save(employee);
+
+        // Create and store new password
         String password = String.format("$s123!", employee.getLastName());
         Login login = new Login(user.getId(), password);
         loginRepository.save(login);
