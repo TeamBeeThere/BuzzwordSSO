@@ -6,6 +6,7 @@ public class EmployeeDTO {
     private String firstName;
     private String lastName;
     private int department;
+    private String title;
     private String email;
     private int locationId;
 
@@ -14,8 +15,9 @@ public class EmployeeDTO {
         int userId,
         String firstName,
         String lastName, 
-        int department, 
-        String email, 
+        int department,
+        String title,
+        String email,
         int locationId
     ) {
         this.id = id;
@@ -23,6 +25,7 @@ public class EmployeeDTO {
         this.firstName = firstName;
         this.lastName = lastName;
         this.department = department;
+        this.title = title;
         this.email = email;
         this.locationId = locationId;
     }
@@ -65,6 +68,14 @@ public class EmployeeDTO {
 
     public int getDepartment() {
         return department;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public void setEmail(String email) {

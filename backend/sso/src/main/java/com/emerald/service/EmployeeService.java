@@ -36,10 +36,20 @@ public class EmployeeService {
             .orElseThrow(() -> new EntityNotFoundException("Employee not found!"));
         
         
-        // department must exist
-        locationRepository.findById(request.getId())
-            .orElseThrow(() -> new IllegalArgumentException("Invalid Location"));
         // location must exist
+        locationRepository.findById(request.getLocationId())
+            .orElseThrow(() -> new IllegalArgumentException("Invalid Location"));
+        // department must exist
+        departmentRepository.findById(request.getDepartment())
+            .orElseThrow(() -> new IllegalArgumentException("Invalid Department"));
 
+        employee.setFirstName(request.getFirstName().trim());
+        employee.setLastName(request.getLastName().trim());
+        employee.setLocation(request.getLocationId());
+        employee.setDepartment(request.getDepartment());
+        employee.setTitle(request.getTitle().trim());
+        employee.setEmail(request.getEmail().trim());
+
+        return employeeRepository.save(employee);
     }
 }
