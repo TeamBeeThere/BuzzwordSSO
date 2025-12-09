@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
     "dev:frontend": "cd frontend && npm run dev",
-    "dev:backend": "cd backend/sso && mvnw.cmd spring-boot:run",
+    "dev:backend": "cd backend/sso && ./mvnw spring-boot:run",
     "build": "vite build",
     "preview": "vite preview",
     "test:e2e": "playwright test",
