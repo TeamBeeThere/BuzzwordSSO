@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.emerald.dto.EmployeeDTO;
+import com.emerald.dto.LoginDTO;
 import com.emerald.dto.UserDTO;
 import com.emerald.service.EmployeeService;
 import com.emerald.service.UsersService;
@@ -60,15 +61,9 @@ public class SSOController {
 
      /* Login Endpoint */
     @PostMapping("/login")
-    public ResponseEntity<String> login(/* @RequestBody User user */){
+    public ResponseEntity<String> login(@RequestBody UserDTO user, LoginDTO login){
 
-        /* if(userRepo.findByUsernameAndPassword(user.getUsername(), user.getPassword())){
-        
-        Employee currentEmployee = empRepo.getEmployeeByUserId(user.getId())
-        String token = Tokenizer(currentEmployee)
-
-        }
-        */
+        usersService.authenticateUser(user, login);
 
         return ResponseEntity.status(HttpStatus.OK)
                              .contentType(MediaType.APPLICATION_JSON)
