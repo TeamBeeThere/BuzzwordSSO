@@ -73,7 +73,7 @@ public class UsersService {
 
         // 2. Fetch the existing Employee record (assuming employee ID matches user ID for simplicity)
         Employee existingEmployee = employeeRepository.findById(updatedUser.getUserId())
-            .orElseThrow(() -> new NoSuchElementException("Employee profile not found for user ID: " + userId));
+            .orElseThrow(() -> new NoSuchElementException("Employee profile not found for user ID: " + updatedUser.getUserId()));
 
         // Update Employee fields
         existingEmployee.setFirstName(updatedEmployee.getFirstName());
