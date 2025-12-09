@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import { addEmployee } from '../../utils/services.js';
+import { createAccount } from '../../utils/services.js';
 
 let registerResponse = ref("");
 
@@ -8,7 +8,7 @@ const registerEmployee = async (event) => {
   let firstName = document.getElementById('firstNameInput').value;
   let lastName = document.getElementById('lastNameInput').value;
   let username = firstName.charAt(0).toLowerCase() + lastName.toLowerCase();
-  let password = "eggplant123!";
+  let password = `${lastName}123!`;
 
   event.preventDefault();
     let newEmployee = {
@@ -20,7 +20,7 @@ const registerEmployee = async (event) => {
       department: document.getElementById('departmentInput').value,
       title: document.getElementById('titleInput').value,
     };
-    let response = await addEmployee(newEmployee);
+    let response = await createAccount(newEmployee);
     if (response.data) {
       registerResponse.value = `${newEmployee.firstName} ${newEmployee.lastName} registered successfully!`;
     }

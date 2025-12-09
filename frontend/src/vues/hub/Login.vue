@@ -1,16 +1,69 @@
 <script setup>
+import { ref, inject } from 'vue';
+import { useRouter } from 'vue-router';
+import axios from 'axios';
+
+const API_URL = 'http://localhost:6767/sso';
+const router = useRouter();
+
+const handleLogin = inject('handleLogin');
+
+const username = ref('');
+const password = ref('');
+const errorMessage = ref('');
+const isLoading = ref(false);
+
+const submitLogin = async (event) => {
+  event.preventDefault();
+  isLoading.value = true;
+  errorMessage.value = '';
+  
+  try {
+    const response = await axios.post(`${API_URL}/login`, {
+      username: username.value,
+      password: password.value
+    });
+    
+    const { jwtToken } = response.data;
+    const userData = response.data.user || { username: username.value };
+    
+    handleLogin(jwtToken, userData);
+    router.push('/');
+    
+  } catch (error) {
+    errorMessage.value = error.response?.data?.message || 'Login failed. Please try again.';
+  } finally {
+    isLoading.value = false;
+  }
+};
 </script>
 
 <template>
 <div className="vueCard">
-<form className="loginForm">
-    <label>Username</label><input type="text" placeholder="Username" /><br/><br/>
-    <label>Password</label><input type="password" placeholder="Password" /><br/><br/>
-    <button type="submit">Login</button>
-</form>
-
-
-</div>
+    <form className="loginForm" @submit="submitLogin">
+      <label>Username</label>
+      <input 
+        type="text" 
+        v-model="username" 
+        placeholder="Username" 
+        required 
+      /><br/><br/>
+      
+      <label>Password</label>
+      <input 
+        type="password" 
+        v-model="password" 
+        placeholder="Password" 
+        required 
+      /><br/><br/>
+      
+      <button type="submit" :disabled="isLoading">
+        {{ isLoading ? 'Logging in...' : 'Login' }}
+      </button>
+      
+      <p v-if="errorMessage" style="color: red;">{{ errorMessage }}</p>
+    </form>
+  </div>
 </template>
 
 <style scoped>
