@@ -6,7 +6,10 @@ const TOKEN = 'eggplant-secret-token';
 export const registerAccount = async (employeeData) => {
   try {
     const response = await axios.post(`${API_URL}/register`, employeeData, {
-      headers: { token: TOKEN } 
+      headers: {
+        Authorization: `Bearer ${TOKEN}`,
+        'Content-Type': 'application/json',
+      } 
     });
     return response.data;
   } catch (error) {

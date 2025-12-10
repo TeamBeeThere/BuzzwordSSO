@@ -3,9 +3,11 @@ package com.emerald.service;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.emerald.dto.CredentialsDTO;
 import com.emerald.dto.EmployeeDTO;
 import com.emerald.dto.LoginDTO;
 import com.emerald.dto.UserDTO;
@@ -36,6 +38,7 @@ public class UsersService {
     private final LoginRepository loginRepository;
     private final LocationRepository locationRepository;
     private final DepartmentRepository departmentRepository;
+    private final PasswordEncoder passwordEncoder;
 
     // --- Constructor Injection ---
     /**
@@ -46,13 +49,15 @@ public class UsersService {
         UsersRepository userRepository, 
         LoginRepository loginRepository,
         LocationRepository locationRepository,
-        DepartmentRepository departmentRepository
+        DepartmentRepository departmentRepository,
+        PasswordEncoder passwordEncoder
     ) {
         this.employeeRepository = employeeRepository;
         this.userRepository = userRepository;
         this.loginRepository = loginRepository;
         this.locationRepository = locationRepository;
         this.departmentRepository = departmentRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     // Business logic methods would go here, focusing on User and Login operations...
@@ -77,24 +82,24 @@ public class UsersService {
 
         // Create and store new password
         String password = String.format("%s123!", employee.getLastName());
-        Login login = new Login(user.getId(), password);
+        String hashedPassword = passwordEncoder.encode(password);
+        Login login = new Login(user.getId(), hashedPassword);
         loginRepository.save(login);
 
         return user;
     }
 
-    public Users authenticateUser(UserDTO passedUser, LoginDTO rawPassword) throws SecurityException {
+    public Users authenticateUser(CredentialsDTO credentials) throws SecurityException {
         // 1. Find the User by ID
-        Users user = userRepository.findByUserName(passedUser.getUserName())
+        Users user = userRepository.findByUserName(credentials.getUserName())
             .orElseThrow(() -> new SecurityException("Authentication failed: Invalid credentials."));
         
         // 2. Retrieve the stored login hash
-        Login login = loginRepository.findById(passedUser.getUserId())
-            .orElseThrow(() -> new SecurityException("Authentication failed: Missing login record."));
+        Login login = loginRepository.findByUserID(user.getId())
+            .orElseThrow(() -> new SecurityException("Authentication failed: Missing login record." + user.getId()));
             
         // 3. Verify the password
-        // In a real app: if (passwordEncoder.matches(rawPassword, login.getPasswordHash())) { ... }
-        if (("HASHED_" + rawPassword).equals(login.getPasswordHash())) { // Placeholder comparison
+        if (passwordEncoder.matches(credentials.getPassword(), login.getPasswordHash())) {
             return user;
         } else {
             throw new SecurityException("Authentication failed: Invalid credentials.");
@@ -133,6 +138,16 @@ public class UsersService {
         // Update User fields
         existingUser.setUserName(updatedUser.getUserName());
         return userRepository.save(existingUser);
+    }
+
+    @Transactional
+    public void updatePassword(LoginDTO request) {
+        Login existingLogin = loginRepository.findByUserID(request.getUserId())
+            .orElseThrow(() -> new UserNotFoundException(request.getUserId()));
+
+        String hashedPassword = passwordEncoder.encode(request.getPassword());
+        existingLogin.setPasswordHash(hashedPassword);
+        loginRepository.save(existingLogin);
     }
 
     @Transactional

@@ -38,7 +38,7 @@ public class EmployeeService {
         
         // location must exist
         locationRepository.findById(request.getLocationId())
-            .orElseThrow(() -> new IllegalArgumentException("Invalid Location"));
+            .orElseThrow(() -> new IllegalArgumentException("Invalid Location" + request.getLocationId()));
         // department must exist
         departmentRepository.findById(request.getDepartment())
             .orElseThrow(() -> new IllegalArgumentException("Invalid Department"));

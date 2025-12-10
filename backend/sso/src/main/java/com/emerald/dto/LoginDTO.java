@@ -9,6 +9,11 @@ public class LoginDTO {
         
     }
 
+    public LoginDTO(int userId, String password) {
+        this.userId = userId;
+        this.password = password;
+    }
+
     public LoginDTO(int loginId, int userId, String password) {
         this.loginId = loginId;
         this.userId = userId;
