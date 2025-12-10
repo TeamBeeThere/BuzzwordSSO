@@ -96,12 +96,11 @@ public class UsersService {
         }
     }
 
-    public UserDetailDTO viewUserDetails(String userName) {
-        Users user = userRepository.findByUserName(userName)
-            .orElseThrow(() -> new NoSuchElementException("User not found with username: " + userName));
+    public UserDetailDTO viewUserDetails(int userID) {
+        Users user = userRepository.findById(userID)
+            .orElseThrow(() -> new NoSuchElementException("User not found with user id: " + userID));
         
-        Employee employee = employeeRepository.findByUserId(user.getId())
-            .orElseThrow(() -> new NoSuchElementException("Employee not found with user id: " + user.getId()));
+        Employee employee = employeeRepository.findByUserId(userID);
         
         Departments department = departmentRepository.findById(employee.getDepartment())
             .orElseThrow(() -> new NoSuchElementException("Department not found"));
@@ -140,10 +139,10 @@ public class UsersService {
         }
         
         // 2. Delete the Employee record (assuming employee ID matches user ID)
-        employeeRepository.findByUserId(id).ifPresent(employeeRepository::delete);
+        employeeRepository.deleteByUserId(id);
 
         // 3. Delete the Login record (assuming login ID matches user ID)
-        loginRepository.findByUserId(id).ifPresent(loginRepository::delete);
+        loginRepository.findByUserID(id).ifPresent(loginRepository::delete);
 
         // 4. Delete the User record (Primary record)
         userRepository.delete(userToDelete.get());
