@@ -13,7 +13,8 @@ import com.emerald.config.SpringConfig;
 @ComponentScan(basePackages = {
 	"com.emerald.service",
 	"com.emerald.controller",
-	"com.emerald.security"
+	"com.emerald.security",
+	"com.emerald.util"
 })
 @EntityScan(basePackages = "com.emerald.model")
 @EnableJpaRepositories(basePackages = "com.emerald.repository")
