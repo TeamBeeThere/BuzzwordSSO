@@ -4,6 +4,7 @@ import Login from './Login.vue'
 import AppList from './AppList.vue'
 import Profile from './Profile.vue'
 
+
 let user = {
   firstName: 'Bill',
   lastName: 'Murray',

@@ -1,32 +1,31 @@
 <script setup>
 import { ref } from 'vue';
-import { createAccount } from '../../utils/services.js';
+import { registerAccount } from '../../utils/services.js';
 
 let registerResponse = ref("");
 
 const registerEmployee = async (event) => {
   let firstName = document.getElementById('firstNameInput').value;
   let lastName = document.getElementById('lastNameInput').value;
-  let username = firstName.charAt(0).toLowerCase() + lastName.toLowerCase();
-  let password = `${lastName}123!`;
+  let email = firstName.toLowerCase() + "." + lastName.toLowerCase() + "@buzzword.com";
 
   event.preventDefault();
     let newEmployee = {
       firstName,
       lastName,
-      username,
-      password,
-      location: document.getElementById('locationInput').value,
-      department: document.getElementById('departmentInput').value,
+      email,
+      department: parseInt(document.getElementById('departmentInput').value),
       title: document.getElementById('titleInput').value,
+      locationId: parseInt(document.getElementById('locationInput').value),
     };
-    let response = await createAccount(newEmployee);
-    if (response.data) {
-      registerResponse.value = `${newEmployee.firstName} ${newEmployee.lastName} registered successfully!`;
-    }
-    else {
-      registerResponse.value = `Error registering Employee. Please try again. Or contact support.`;
-    }
+    let response = await registerAccount(newEmployee);
+    if (response && response.message) {
+    registerResponse.value = `${newEmployee.firstName} ${newEmployee.lastName} registered successfully!`;
+  } else if (response && response.error) {
+    registerResponse.value = `Error: ${response.error}`;
+  } else {
+    registerResponse.value = `Error registering Employee. Please try again. Or contact support.`;
+  }
 }
 
 </script>
@@ -44,21 +43,21 @@ const registerEmployee = async (event) => {
        <div><label for="location">Location</label>
        <select id="locationInput" name="location">
           <option disabled selected>Select</option>
-          <option value="Japan">Japan</option>
-          <option value="Brazil">Brazil</option>
-          <option value="United States">United States</option>
-          <option value="South Africa">South Africa</option>
-          <option value="Germany">Germany</option>
+          <option value="1">Japan</option>
+          <option value="2">Brazil</option>
+          <option value="3">United States</option>
+          <option value="4">South Africa</option>
+          <option value="5">Germany</option>
         </select>
         </div>
 
        <div><label for="Department">Department</label>
        <select id="departmentInput" name="department">
           <option disabled selected>Select</option>
-          <option value="Sales">Sales</option>
-          <option value="Information Technology">Information Technology</option>
-          <option value="Legal">Legal</option>
-          <option value="Hr">Hr</option>
+          <option value="1">Sales</option>
+          <option value="2">Information Technology</option>
+          <option value="3">Legal</option>
+          <option value="4">Hr</option>
         </select>
         </div>
 
