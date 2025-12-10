@@ -1,8 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package com.emerald.controller;
 
 import org.springframework.http.HttpStatus;
@@ -20,13 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.emerald.dto.EmployeeDTO;
 import com.emerald.dto.LoginDTO;
 import com.emerald.dto.UserDTO;
+import com.emerald.dto.UserDetailDTO;
 import com.emerald.service.EmployeeService;
 import com.emerald.service.UsersService;
 
-/**
- *
- * @author protech
- */
 @RestController
 @RequestMapping("/sso")
 public class SSOController {
@@ -39,24 +31,18 @@ public class SSOController {
             this.employeeService = employeeService;
         }
     
-    @GetMapping(("/hello"))
+    @GetMapping("/hello")
     public ResponseEntity<String> greetings(){
-        
-        
-
         return ResponseEntity.status(HttpStatus.OK)
                              .contentType(MediaType.APPLICATION_JSON)
                              .body("{\"message\": \"Hello\"}");
     }
 
-    @GetMapping("/viewaccount" /* /viewaccount/{id} */)
-    public ResponseEntity<String> viewAccount(/*@PathVariable Long id */){
+    @GetMapping("/viewaccount/{id}")
+    public UserDetailDTO viewAccount(@PathVariable int id){
+        UserDetailDTO user = usersService.viewUserDetails(id);
 
-        // empRepo.getById();
-
-        return ResponseEntity.status(HttpStatus.OK)
-                             .contentType(MediaType.APPLICATION_JSON)
-                             .body("{\"message\": \"This is your account\"}");
+        return user;
     }
 
      /* Login Endpoint */
