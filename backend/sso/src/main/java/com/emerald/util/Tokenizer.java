@@ -55,7 +55,7 @@ public class Tokenizer {
 
     public String createToken(Employee employee){
 
-        final String secretString = "RockertSoftwareRocks2025ThisIsNotSecureEnough";
+        final String secretString = "RocketSoftwareRocks2025ThisIsNotSecureEnough";
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretString));
 
         Departments department = departmentRepository.findById(employee.getDepartment())
@@ -63,14 +63,24 @@ public class Tokenizer {
         Location location = locationRepository.findById(employee.getLocation())
             .orElseThrow(() -> new LocationNotFoundException(employee.getLocation()));
 
+        
+
         Date now = new Date();
         Date expirationDate = new Date(now.getTime() + TimeUnit.MINUTES.toMillis(60));
+
+        System.out.println(employee.getId());
+        System.out.println(employee.getFirstName());
+        System.out.println(employee.getLastName());
+        System.out.println(location.getCountry());
+        System.out.println(department.getName());
+        System.out.println(employee.getTitle());
+
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", employee.getId());
         claims.put("first_name", employee.getFirstName());
         claims.put("last_name", employee.getLastName());
-        claims.put("location", location);     //fix
-        claims.put("department", department); ///////////fix
+        claims.put("location", location.getCountry());     //fix
+        claims.put("department", department.getName()); ///////////fix
         claims.put("title", employee.getTitle());
 
         String builder =  Jwts.builder()
