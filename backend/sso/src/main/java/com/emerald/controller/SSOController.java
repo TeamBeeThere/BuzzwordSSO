@@ -1,5 +1,6 @@
 package com.emerald.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +18,15 @@ import com.emerald.dto.EmployeeDTO;
 import com.emerald.dto.LoginDTO;
 import com.emerald.dto.UserDTO;
 import com.emerald.dto.UserDetailDTO;
+import com.emerald.enums.IDTypeEnum;
+import com.emerald.exception.EmployeeNotFoundException;
 import com.emerald.exception.UserNotFoundException;
+import com.emerald.model.Employee;
 import com.emerald.model.Users;
+import com.emerald.repository.EmployeeRepository;
 import com.emerald.service.EmployeeService;
 import com.emerald.service.UsersService;
+import com.emerald.util.Tokenizer;
 
 @CrossOrigin
 @RestController
@@ -29,10 +35,18 @@ public class SSOController {
 
         private final UsersService usersService;
         private final EmployeeService employeeService;
+        private final Tokenizer tokenMaker;
 
-        SSOController(UsersService usersService, EmployeeService employeeService){
+        @Autowired
+        EmployeeRepository employeeRepository;
+
+        SSOController(UsersService usersService, EmployeeService employeeService, Tokenizer tokenMaker){
             this.usersService = usersService;
             this.employeeService = employeeService;
+            this.tokenMaker = tokenMaker;
+
+
+            
         }
     
     @GetMapping("/hello")
@@ -45,6 +59,18 @@ public class SSOController {
     @GetMapping("/account/{id}")
     public UserDetailDTO viewAccount(@PathVariable int id){
         return usersService.viewUserDetails(id);
+    }
+
+    @GetMapping("/account/tokenize/{id}")
+    public String tokenize(@PathVariable int id){
+
+        Employee emplogin = employeeRepository.findByUserId(id)
+            .orElseThrow(() -> new EmployeeNotFoundException(IDTypeEnum.USER, id));
+
+        
+        String token = tokenMaker.createToken(emplogin);
+
+        return token;
     }
 
      /* Login Endpoint */
