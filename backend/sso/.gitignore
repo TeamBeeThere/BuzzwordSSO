@@ -1,7 +1,5 @@
 HELP.md
 target/
-backend/
-.gitignore
 
 
 .mvn/wrapper/maven-wrapper.jar
