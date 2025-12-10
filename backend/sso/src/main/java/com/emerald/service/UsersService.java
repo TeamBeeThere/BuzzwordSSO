@@ -3,6 +3,7 @@ package com.emerald.service;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +37,7 @@ public class UsersService {
     private final LoginRepository loginRepository;
     private final LocationRepository locationRepository;
     private final DepartmentRepository departmentRepository;
+    private final PasswordEncoder passwordEncoder;
 
     // --- Constructor Injection ---
     /**
@@ -46,13 +48,15 @@ public class UsersService {
         UsersRepository userRepository, 
         LoginRepository loginRepository,
         LocationRepository locationRepository,
-        DepartmentRepository departmentRepository
+        DepartmentRepository departmentRepository,
+        PasswordEncoder passwordEncoder
     ) {
         this.employeeRepository = employeeRepository;
         this.userRepository = userRepository;
         this.loginRepository = loginRepository;
         this.locationRepository = locationRepository;
         this.departmentRepository = departmentRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     // Business logic methods would go here, focusing on User and Login operations...
@@ -77,8 +81,6 @@ public class UsersService {
 
         // Create and store new password
         String password = String.format("%s123!", employee.getLastName());
-        Login login = new Login(user.getId(), password);
-        String password = String.format("$s123!", employee.getLastName());
         String hashedPassword = passwordEncoder.encode(password);
         Login login = new Login(user.getId(), hashedPassword);
         loginRepository.save(login);
