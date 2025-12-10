@@ -5,8 +5,11 @@ const TOKEN = 'eggplant-secret-token';
 
 export const createAccount = async (employeeData) => {
   try {
-    const response = await axios.post(`${API_URL}/createaccount`, employeeData, {
-      headers: { token: TOKEN } 
+    const response = await axios.post(`${API_URL}/employees`, employeeData, {
+      headers: {
+        Authorization: `Bearer ${TOKEN}`,
+        'Content-Type': 'application/json',
+      } 
     });
     return response.data;
   } catch (error) {
