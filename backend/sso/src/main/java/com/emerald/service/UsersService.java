@@ -17,16 +17,17 @@ import com.emerald.exception.DepartmentNotFoundException;
 import com.emerald.exception.EmployeeNotFoundException;
 import com.emerald.exception.LocationNotFoundException;
 import com.emerald.exception.UserNotFoundException;
+import com.emerald.model.Departments;
 import com.emerald.model.Employee;
+import com.emerald.model.Location;
 import com.emerald.model.Login;
 import com.emerald.model.Users;
-import com.emerald.model.Location;
-import com.emerald.model.Departments;
+import com.emerald.repository.DepartmentRepository;
 import com.emerald.repository.EmployeeRepository;
+import com.emerald.repository.LocationRepository;
 import com.emerald.repository.LoginRepository;
 import com.emerald.repository.UsersRepository;
-import com.emerald.repository.LocationRepository;
-import com.emerald.repository.DepartmentRepository;
+import com.emerald.util.Tokenizer;
 import com.emerald.util.UserUtils;
 
 @Service
@@ -39,6 +40,7 @@ public class UsersService {
     private final LocationRepository locationRepository;
     private final DepartmentRepository departmentRepository;
     private final PasswordEncoder passwordEncoder;
+    private final Tokenizer tokenMaker;
 
     // --- Constructor Injection ---
     /**
@@ -50,7 +52,8 @@ public class UsersService {
         LoginRepository loginRepository,
         LocationRepository locationRepository,
         DepartmentRepository departmentRepository,
-        PasswordEncoder passwordEncoder
+        PasswordEncoder passwordEncoder,
+        Tokenizer tokenMaker
     ) {
         this.employeeRepository = employeeRepository;
         this.userRepository = userRepository;
@@ -58,6 +61,7 @@ public class UsersService {
         this.locationRepository = locationRepository;
         this.departmentRepository = departmentRepository;
         this.passwordEncoder = passwordEncoder;
+        this.tokenMaker = tokenMaker;
     }
 
     // Business logic methods would go here, focusing on User and Login operations...
@@ -89,7 +93,7 @@ public class UsersService {
         return user;
     }
 
-    public Users authenticateUser(CredentialsDTO credentials) throws SecurityException {
+    public String authenticateUser(CredentialsDTO credentials) throws SecurityException {
         // 1. Find the User by ID
         Users user = userRepository.findByUserName(credentials.getUserName())
             .orElseThrow(() -> new SecurityException("Authentication failed: Invalid credentials."));
@@ -100,7 +104,9 @@ public class UsersService {
             
         // 3. Verify the password
         if (passwordEncoder.matches(credentials.getPassword(), login.getPasswordHash())) {
-            return user;
+            Employee employee = employeeRepository.findByUserId(user.getId())
+                .orElseThrow(() -> new EmployeeNotFoundException(IDTypeEnum.USER, user.getId()));
+            return tokenMaker.createToken(employee);
         } else {
             throw new SecurityException("Authentication failed: Invalid credentials.");
         }

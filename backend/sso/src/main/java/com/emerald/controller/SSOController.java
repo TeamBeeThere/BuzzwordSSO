@@ -1,7 +1,6 @@
 package com.emerald.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.apache.catalina.connector.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,13 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.emerald.dto.CredentialsDTO;
 import com.emerald.dto.EmployeeDTO;
 import com.emerald.dto.LoginDTO;
-import com.emerald.dto.UserDTO;
 import com.emerald.dto.UserDetailDTO;
 import com.emerald.enums.IDTypeEnum;
 import com.emerald.exception.EmployeeNotFoundException;
-import com.emerald.exception.UserNotFoundException;
 import com.emerald.model.Employee;
-import com.emerald.model.Users;
 import com.emerald.repository.EmployeeRepository;
 import com.emerald.service.EmployeeService;
 import com.emerald.service.UsersService;
@@ -70,13 +66,10 @@ public class SSOController {
 
      /* Login Endpoint */
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody CredentialsDTO credentials){
+    public String login(@RequestBody CredentialsDTO credentials){
 
-        usersService.authenticateUser(credentials);
-
-        return ResponseEntity.status(HttpStatus.OK)
-                             .contentType(MediaType.APPLICATION_JSON)
-                             .body("{\"message\": \"Login Successful\" , \"jwtToken\": \"%s\"}" /* , token */);
+        String token = usersService.authenticateUser(credentials);
+        return token;
     }
 
     @PostMapping("/register")
