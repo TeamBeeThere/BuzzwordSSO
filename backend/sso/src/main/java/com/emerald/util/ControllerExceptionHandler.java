@@ -10,6 +10,11 @@ import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import com.emerald.exception.DepartmentNotFoundException;
+import com.emerald.exception.EmployeeNotFoundException;
+import com.emerald.exception.LocationNotFoundException;
+import com.emerald.exception.UserNotFoundException;
+
 
 @ControllerAdvice
 public class ControllerExceptionHandler {
@@ -63,4 +68,32 @@ public class ControllerExceptionHandler {
                              .body("Resource not found: " + e.getMessage());
     }
 
+/* Handle Entities not found */    
+    @ExceptionHandler(DepartmentNotFoundException.class)
+    public ResponseEntity<String> departmentNotFoundHandler(DepartmentNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                             .contentType(MediaType.APPLICATION_JSON)
+                             .body(e.getMessage());
+    }
+
+    @ExceptionHandler(EmployeeNotFoundException.class)
+    public ResponseEntity<String> employeeNotFoundHandler(EmployeeNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                             .contentType(MediaType.APPLICATION_JSON)
+                             .body(e.getMessage());
+    }
+
+    @ExceptionHandler(LocationNotFoundException.class)
+    public ResponseEntity<String> locationNotFoundHandler(LocationNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                             .contentType(MediaType.APPLICATION_JSON)
+                             .body(e.getMessage());
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<String> userNotFoundHandler(UserNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                             .contentType(MediaType.APPLICATION_JSON)
+                             .body(e.getMessage());
+    }
 }

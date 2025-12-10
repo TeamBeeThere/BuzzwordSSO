@@ -10,6 +10,11 @@ import com.emerald.dto.EmployeeDTO;
 import com.emerald.dto.LoginDTO;
 import com.emerald.dto.UserDTO;
 import com.emerald.dto.UserDetailDTO;
+import com.emerald.enums.IDTypeEnum;
+import com.emerald.exception.DepartmentNotFoundException;
+import com.emerald.exception.EmployeeNotFoundException;
+import com.emerald.exception.LocationNotFoundException;
+import com.emerald.exception.UserNotFoundException;
 import com.emerald.model.Employee;
 import com.emerald.model.Login;
 import com.emerald.model.Users;
@@ -98,14 +103,15 @@ public class UsersService {
 
     public UserDetailDTO viewUserDetails(int userID) {
         Users user = userRepository.findById(userID)
-            .orElseThrow(() -> new NoSuchElementException("User not found with user id: " + userID));
+            .orElseThrow(() -> new UserNotFoundException(userID));
         
-        Employee employee = employeeRepository.findByUserId(userID);
+        Employee employee = employeeRepository.findByUserId(userID)
+            .orElseThrow(() -> new EmployeeNotFoundException(IDTypeEnum.USER, userID));
         
         Departments department = departmentRepository.findById(employee.getDepartment())
-            .orElseThrow(() -> new NoSuchElementException("Department not found"));
+            .orElseThrow(() -> new DepartmentNotFoundException(employee.getDepartment()));
         Location location = locationRepository.findById(employee.getLocation())
-            .orElseThrow(() -> new NoSuchElementException("Location not found"));
+            .orElseThrow(() -> new LocationNotFoundException(employee.getLocation()));
 
         return new UserDetailDTO(
             user.getUserName(),
