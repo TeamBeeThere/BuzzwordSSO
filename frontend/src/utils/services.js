@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { API_URL, getAuthHeaders } from '../config/api.js';
+import { API_URL, getAuthHeaders } from '../../config.js';
 
 
 export const registerAccount = async (employeeData) => {

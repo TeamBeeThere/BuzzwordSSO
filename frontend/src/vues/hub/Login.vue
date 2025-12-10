@@ -2,7 +2,7 @@
 import { ref, inject } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
-import { API_URL } from '../../config/api.js';
+import { API_URL } from '../../../config.js';
 
 const router = useRouter();
 

@@ -3,7 +3,7 @@ import { ref, watch, onMounted, provide } from 'vue';
 import { RouterView } from 'vue-router';
 import axios from 'axios';
 
-import { API_URL, getAuthHeaders } from './config/api.js';
+import { API_URL, getAuthHeaders } from '../config.js';
 
 const savedUser = localStorage.getItem('user');
 const user = ref(savedUser ? JSON.parse(savedUser) : null);
