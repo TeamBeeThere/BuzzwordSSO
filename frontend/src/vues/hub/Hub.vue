@@ -1,18 +1,18 @@
 <script setup>
 import { ref } from 'vue';
 import Login from './Login.vue'
+import { API_URL } from '../../api.js';
 import AppList from './AppList.vue'
 import Profile from './Profile.vue'
 
+const user = inject('user');
+const token = inject('token');
 
-let user = {
-  firstName: 'Bill',
-  lastName: 'Murray',
-}; 
-
-let displayName = user
-  ? user.firstName.charAt(0).toUpperCase() + user.lastName.charAt(0).toUpperCase()
-  : '';
+const displayName = computed(() => {
+  return user.value
+    ? user.value.first_name?.charAt(0).toUpperCase() + user.value.last_name?.charAt(0).toUpperCase()
+    : '';
+});
 
 let displayUser = ref(false);
 
@@ -27,9 +27,9 @@ let displayUser = ref(false);
 
 <div className="mainContent">
 
-  <Login v-if="!user"/> 
-  <AppList v-if="user && !displayUser"/>
-  <Profile v-if="user && displayUser"  @updateDisplayUser="displayUser = $event"
+  <Login v-if="!user.value"/> 
+  <AppList v-if="user.value && !displayUser"/>
+  <Profile v-if="user.value && displayUser"  @updateDisplayUser="displayUser = $event"
 />
 
 </div>
