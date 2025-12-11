@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { API_URL, getAuthHeaders } from '../config/api.js';
+import { API_URL, getAuthHeaders } from '../../config.js';
 
 
 export const registerAccount = async (employeeData) => {
@@ -53,11 +53,7 @@ export const delAccount = async (employeeData) => {
 
 export const loginUser = async (employeeData) => {
   try {
-<<<<<<< HEAD
     const response = await axios.post(`${API_URL}/login`, employeeData, {
-=======
-    const response = await axios.delete(`${API_URL}/login`, employeeData, {
->>>>>>> 864162a (adding login support)
          headers: getAuthHeaders()
     });
     return response.data;
