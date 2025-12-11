@@ -7,6 +7,7 @@ import Profile from './Profile.vue'
 
 const user = inject('user');
 const token = inject('token');
+const $cookies = inject('$cookies');
 
 const displayName = computed(() => {
   if (!user || !user.value) return '';
@@ -16,6 +17,11 @@ const displayName = computed(() => {
 });
 let displayUser = ref(false);
 
+const handleLogout = () => {
+ $cookies.remove('eggplant_user_token', '');
+ user.value = null;
+}
+
 </script>
 
 <template>
@@ -23,6 +29,7 @@ let displayUser = ref(false);
   <div className="header">
     <h1>Buzzword Software Solutions</h1>
     <div v-if="user" className="displayUser" @click="displayUser = true"> {{displayName}}  </div>
+    <button v-if="user" @click="handleLogout">Logout</button>
 </div>
 
 <div className="mainContent">
