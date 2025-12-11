@@ -7,9 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.crypto.SecretKey;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import com.emerald.exception.DepartmentNotFoundException;
 import com.emerald.exception.LocationNotFoundException;
@@ -17,10 +15,7 @@ import com.emerald.model.Departments;
 import com.emerald.model.Employee;
 import com.emerald.model.Location;
 import com.emerald.repository.DepartmentRepository;
-import com.emerald.repository.EmployeeRepository;
 import com.emerald.repository.LocationRepository;
-import com.emerald.repository.LoginRepository;
-import com.emerald.repository.UsersRepository;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -28,10 +23,6 @@ import io.jsonwebtoken.security.Keys;
 
 @Component
 public class Tokenizer {
-
-    private final EmployeeRepository employeeRepository;
-    private final UsersRepository userRepository;
-    private final LoginRepository loginRepository;
     private final LocationRepository locationRepository;
     private final DepartmentRepository departmentRepository;
 
@@ -40,15 +31,9 @@ public class Tokenizer {
      * Constructor used by Spring to inject the required repository dependencies.
      */
     public Tokenizer(
-        EmployeeRepository employeeRepository,
-        UsersRepository userRepository, 
-        LoginRepository loginRepository,
         LocationRepository locationRepository,
         DepartmentRepository departmentRepository
         ) {
-        this.employeeRepository = employeeRepository;
-        this.userRepository = userRepository;
-        this.loginRepository = loginRepository;
         this.locationRepository = locationRepository;
         this.departmentRepository = departmentRepository;
     }
@@ -67,13 +52,6 @@ public class Tokenizer {
 
         Date now = new Date();
         Date expirationDate = new Date(now.getTime() + TimeUnit.MINUTES.toMillis(60));
-
-        System.out.println(employee.getId());
-        System.out.println(employee.getFirstName());
-        System.out.println(employee.getLastName());
-        System.out.println(location.getCountry());
-        System.out.println(department.getName());
-        System.out.println(employee.getTitle());
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", employee.getId());

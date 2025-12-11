@@ -31,21 +31,18 @@ import com.emerald.util.Tokenizer;
 @RequestMapping("/sso")
 public class SSOController {
 
-        private final UsersService usersService;
-        private final EmployeeService employeeService;
-        private final Tokenizer tokenMaker;
+    private final UsersService usersService;
+    private final EmployeeService employeeService;
+    private final Tokenizer tokenMaker;
 
-        @Autowired
-        EmployeeRepository employeeRepository;
+    @Autowired
+    EmployeeRepository employeeRepository;
 
-        SSOController(UsersService usersService, EmployeeService employeeService, Tokenizer tokenMaker){
-            this.usersService = usersService;
-            this.employeeService = employeeService;
-            this.tokenMaker = tokenMaker;
-
-
-            
-        }
+    SSOController(UsersService usersService, EmployeeService employeeService, Tokenizer tokenMaker){
+        this.usersService = usersService;
+        this.employeeService = employeeService;
+        this.tokenMaker = tokenMaker;
+    }
 
     @GetMapping("/account/{id}")
     public UserDetailDTO viewAccount(@PathVariable int id){

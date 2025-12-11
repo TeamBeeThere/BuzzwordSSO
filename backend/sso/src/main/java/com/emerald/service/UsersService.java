@@ -148,12 +148,22 @@ public class UsersService {
 
     @Transactional
     public void updatePassword(LoginDTO request) {
-        Login existingLogin = loginRepository.findByUserID(request.getUserId())
-            .orElseThrow(() -> new UserNotFoundException(request.getUserId()));
-
         String hashedPassword = passwordEncoder.encode(request.getPassword());
-        existingLogin.setPasswordHash(hashedPassword);
-        loginRepository.save(existingLogin);
+
+        Login login = loginRepository.findByUserID(request.getUserId())
+            .map(
+                existing -> {
+                    existing.setPasswordHash(hashedPassword);
+                    return existing;
+            })
+            .orElseGet(() -> {
+                Login newLogin = new Login();
+                newLogin.setUserID(request.getUserId());
+                newLogin.setPasswordHash(hashedPassword);
+                return newLogin;
+            });
+        
+        loginRepository.save(login);
     }
 
     @Transactional
