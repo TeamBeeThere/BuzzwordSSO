@@ -10,7 +10,7 @@ services:
   mysql:
     build: ./mysql
     ports:
-      - "3306:3306"
+      - "3307:3306"
 
 volumes:
   db_data:
