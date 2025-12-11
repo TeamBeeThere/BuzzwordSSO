@@ -1,16 +1,23 @@
 services:
-  sso-backend:
-    build: ./backend/sso
-    ports:
-      - "6767:6767"
-  sso-frontend:
-    build: ./frontend
-    ports:
-      - "3300:3300"
   mysql:
     build: ./mysql
     ports:
       - "3307:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+  sso-backend:
+    build: ./backend/sso
+    ports:
+      - "6767:6767"
+    depends_on:
+      mysql:
+        condition: service_healthy
+  sso-frontend:
+    build: ./frontend
+    ports:
+      - "3300:3300"
 
 volumes:
   db_data:
