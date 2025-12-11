@@ -1,0 +1,16 @@
+services:
+  sso-backend:
+    build: ./backend/sso
+    ports:
+      - "6767:6767"
+  sso-frontend:
+    build: ./frontend
+    ports:
+      - "3300:3300"
+  mysql:
+    build: ./mysql
+    ports:
+      - "3306:3306"
+
+volumes:
+  db_data:
